@@ -1,0 +1,2 @@
+export const MAXIMIZED_CONSOLE_HEIGHT = 230;
+export const MINIMIZED_CONSOLE_HEIGHT = 40;
