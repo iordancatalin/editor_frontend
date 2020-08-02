@@ -10,7 +10,7 @@ const Container = styled.div`
 `;
 
 export const ConsoleContainer = styled(Container).attrs(() => ({
-  className: 'main-font container-fluid p-0 background-secondary',
+  className: 'main-font container-fluid p-0 background-primary',
 }))`
 
   ${(props) => {
@@ -25,24 +25,31 @@ export const ConsoleContainer = styled(Container).attrs(() => ({
   }}
 
   overflow: ${(props) => (props.minimizedConsole ? 'hidden' : 'auto')};
-  border-top: 2px solid #59819c;
+  border-top: 1px solid #94989C;
+
+  &::-webkit-scrollbar-thumb {
+    display: none;
+  }
+
+  &:hover {
+    ::-webkit-scrollbar-thumb {
+      display: block;
+    } 
+  }
 `;
 
-export const EditorContainer = styled(Container).attrs(() => ({
-  className: 'background-primary container-fluid p-0',
-}))`
+export const JavaEditorContainer = styled(Container)`
   ${(props) => {
     const consoleHeight = props.minimizedConsole
       ? MINIMIZED_CONSOLE_HEIGHT
       : MAXIMIZED_CONSOLE_HEIGHT;
 
     return css`
-      min-height: calc(100% - ${consoleHeight}px);
-      max-height: calc(100% - ${consoleHeight}px);
+      height: calc(100% - ${consoleHeight}px);
     `;
   }}
 
-  overflow: auto;
+  overflow: hidden;
 `;
 
 export const ButtonsPanel = styled.div.attrs(() => ({
