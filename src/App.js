@@ -62,10 +62,8 @@ function App() {
   const [isConsoleMinimized, setConsoleMinimized] = useState(false);
   const buttonComponents = BUTTONS.map(createButtonIcon);
 
-  const handleEditorDidMount = (_, current) => {
-    console.log('Editor did mount');
-    editor = current;
-  };
+  const handleEditorDidMount = (_, current) => (editor = current);
+  
   const handleConsoleToggle = () => {
     setTimeout(() => editor.layout(), 400);
     setConsoleMinimized(!isConsoleMinimized);
