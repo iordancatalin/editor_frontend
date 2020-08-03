@@ -1,11 +1,15 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import React, { useState } from 'react';
-import Editor from './components/Editor';
+import JavaEditor from './components/JavaEditor/JavaEditor';
 import Console from './components/Console';
 import ButtonIcon from './components/ButtonIcon/ButtonIcon';
 import { initializeIcons } from './util/icons';
-import { ConsoleContainer, EditorContainer, ButtonsPanel } from './App.style';
+import {
+  ConsoleContainer,
+  JavaEditorContainer,
+  ButtonsPanel,
+} from './App.style';
 
 initializeIcons();
 
@@ -37,8 +41,7 @@ const BUTTONS = [
     text: 'Copy',
     fontAwesomeIcon: 'copy',
     additionalClass: 'mr-2',
-    handleClick: (reactEvent) =>
-      console.log('Copy button clicked', reactEvent),
+    handleClick: (reactEvent) => console.log('Copy button clicked', reactEvent),
   },
 ];
 
@@ -53,20 +56,29 @@ const createButtonIcon = (buttonModel, index) => (
   ></ButtonIcon>
 );
 
+let editor = null;
+
 function App() {
-  const [isConsoleMinimized, setConsoleMinimized] = useState(true);
+  const [isConsoleMinimized, setConsoleMinimized] = useState(false);
   const buttonComponents = BUTTONS.map(createButtonIcon);
+
+  const handleEditorDidMount = (_, current) => (editor = current);
+  
+  const handleConsoleToggle = () => {
+    setTimeout(() => editor.layout(), 400);
+    setConsoleMinimized(!isConsoleMinimized);
+  };
 
   return (
     <div className='h-100'>
-      <EditorContainer minimizedConsole={isConsoleMinimized}>
-        <Editor></Editor>
-      </EditorContainer>
+      <JavaEditorContainer minimizedConsole={isConsoleMinimized}>
+        <JavaEditor editorDidMount={handleEditorDidMount}></JavaEditor>
+      </JavaEditorContainer>
 
       <ConsoleContainer minimizedConsole={isConsoleMinimized}>
         <Console
           minimizedConsole={isConsoleMinimized}
-          handleToggle={() => setConsoleMinimized(!isConsoleMinimized)}
+          handleToggle={handleConsoleToggle}
         ></Console>
       </ConsoleContainer>
 
