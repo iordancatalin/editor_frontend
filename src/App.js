@@ -2,7 +2,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 import React, { useState, useRef } from 'react';
 import JavaEditor from './components/JavaEditor/JavaEditor';
-import Console from './components/Console';
+import Console from './components/Console/Console';
 import ButtonIcon from './components/ButtonIcon/ButtonIcon';
 import { initializeIcons } from './util/icons';
 import {
@@ -69,7 +69,7 @@ const runCode = async (code) => {
 
   const body = await response.text();
 
-  return {status: response.status, body};
+  return { status: response.status, body };
 };
 
 const SAMPLE_CODE = `
@@ -82,11 +82,17 @@ const SAMPLE_CODE = `
 
 function App() {
   const editorRef = useRef();
-  const [isConsoleMinimized, setConsoleMinimized] = useState(false);
+  const [isConsoleMinimized, setConsoleMinimized] = useState(true);
+  const [logs, setLogs] = useState([]);
 
   const runHandleClick = async () => {
+    setConsoleMinimized(false);
+
     const result = await runCode(editorRef.current.getValue());
-    console.log(result);
+    const log = { message: result.body };
+    log.level = result.status === 400 ? 'ERROR' : 'INFO';
+
+    setLogs([log]);
   };
   const runButton = createRunButton(runHandleClick);
 
@@ -99,7 +105,12 @@ function App() {
   const copyHandleClick = (event) => console.log(event);
   const copyButton = createCopyButton(copyHandleClick);
 
-  const buttonComponents = [ runButton, settingsButton, shortcutsButton, copyButton].map(createButtonIcon);
+  const buttonComponents = [
+    runButton,
+    settingsButton,
+    shortcutsButton,
+    copyButton,
+  ].map(createButtonIcon);
 
   const handleEditorDidMount = (_, editor) => (editorRef.current = editor);
 
@@ -119,6 +130,7 @@ function App() {
 
       <ConsoleContainer minimizedConsole={isConsoleMinimized}>
         <Console
+          logs={logs}
           minimizedConsole={isConsoleMinimized}
           handleToggle={handleConsoleToggle}
         ></Console>
