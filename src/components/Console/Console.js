@@ -1,10 +1,21 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import styled from 'styled-components';
+import { LogComponent, ConsoleHeader } from './Console.style';
+
+const createLogElement = (log, index) => {
+  const className = log.level === 'ERROR' ? 'text-danger' : 'text-white';
+
+  return (
+    <div key={index}>
+      <LogComponent className={className}>{log.message}</LogComponent>
+    </div>
+  );
+};
 
 function Console(props) {
   const iconName = props.minimizedConsole ? 'chevron-up' : 'chevron-down';
   const infoStyle = { color: '#B2B2B2' };
+  const logElements = props.logs.map(createLogElement);
 
   return (
     <div className='h-100 position-relative'>
@@ -21,38 +32,10 @@ function Console(props) {
         <span style={infoStyle}>
           2020-07-30 19:22:55 [INFO] Running Java version: openjdk-11.0.6_10
         </span>
-        <br />
-        <br />
-        <pre style={{ fontSize: '100%', color: '#fff' }}>
-          Matrix is:
-          <br />
-          <br />
-          1 2 3 4 5
-          <br />
-          6 7 8 9 0
-          <br />
-          0 9 8 7 6
-          <br />
-          5 4 3 2 1
-          <br />
-          1 2 3 4 5
-          <br />
-        </pre>
+        <div className='mt-2'>{logElements}</div>
       </div>
     </div>
   );
 }
-
-const ConsoleHeader = styled.div.attrs(() => ({
-  className: 'main-font row m-0 cursor-pointer p-2 position-sticky background-primary',
-}))`
-  left: 0;
-  top: 0;
-  font-size: 14px;
-
-  /* &:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-  } */
-`;
 
 export default Console;
