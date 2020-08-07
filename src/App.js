@@ -1,15 +1,14 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-
-import React, { useState, useRef } from 'react';
-import JavaEditor from './components/JavaEditor/JavaEditor';
-import Console from './components/Console/Console';
-import ButtonIcon from './components/ButtonIcon/ButtonIcon';
-import { initializeIcons } from './util/icons';
+import React, { useRef, useState } from 'react';
 import {
+  ButtonsPanel,
   ConsoleContainer,
   JavaEditorContainer,
-  ButtonsPanel,
 } from './App.style';
+import ButtonIcon from './components/ButtonIcon/ButtonIcon';
+import Console from './components/Console/Console';
+import JavaEditor from './components/JavaEditor/JavaEditor';
+import { initializeIcons } from './util/icons';
 
 initializeIcons();
 
@@ -84,15 +83,18 @@ function App() {
   const editorRef = useRef();
   const [isConsoleMinimized, setConsoleMinimized] = useState(true);
   const [logs, setLogs] = useState([]);
+  const [isConsoleLoading, setConsoleLoading] = useState(false);
 
   const runHandleClick = async () => {
     setConsoleMinimized(false);
+    setConsoleLoading(true);
 
     const result = await runCode(editorRef.current.getValue());
     const log = { message: result.body };
     log.level = result.status === 400 ? 'ERROR' : 'INFO';
 
     setLogs([log]);
+    setConsoleLoading(false);
   };
   const runButton = createRunButton(runHandleClick);
 
@@ -130,6 +132,7 @@ function App() {
 
       <ConsoleContainer minimizedConsole={isConsoleMinimized}>
         <Console
+          isLoading={isConsoleLoading}
           logs={logs}
           minimizedConsole={isConsoleMinimized}
           handleToggle={handleConsoleToggle}

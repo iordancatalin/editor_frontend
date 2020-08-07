@@ -1,6 +1,7 @@
-import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { LogComponent, ConsoleHeader } from './Console.style';
+import React from 'react';
+import Loader from '../Loader';
+import { ConsoleHeader, LogComponent } from './Console.style';
 
 const createLogElement = (log, index) => {
   const className = log.level === 'ERROR' ? 'text-danger' : 'text-white';
@@ -12,10 +13,31 @@ const createLogElement = (log, index) => {
   );
 };
 
+const createLoaderElement = () => (
+  <div className='mt-5 pt-4'>
+    <Loader></Loader>
+  </div>
+);
+
 function Console(props) {
+  const createLogElements = () => {
+    const logElements = props.logs.map(createLogElement);
+
+    return (
+      <div>
+        <span style={infoStyle}>
+          2020-07-30 19:22:55 [INFO] Running Java version: openjdk-11.0.6_10
+        </span>
+        <div className='mt-2'>{logElements}</div>
+      </div>
+    );
+  };
+
   const iconName = props.minimizedConsole ? 'chevron-up' : 'chevron-down';
   const infoStyle = { color: '#B2B2B2' };
-  const logElements = props.logs.map(createLogElement);
+  const consoleContent = props.isLoading
+    ? createLoaderElement()
+    : createLogElements();
 
   return (
     <div className='h-100 position-relative'>
@@ -28,12 +50,7 @@ function Console(props) {
         </div>
       </ConsoleHeader>
 
-      <div className='py-2 px-4 code-font'>
-        <span style={infoStyle}>
-          2020-07-30 19:22:55 [INFO] Running Java version: openjdk-11.0.6_10
-        </span>
-        <div className='mt-2'>{logElements}</div>
-      </div>
+      <div className='py-2 px-4 code-font'>{consoleContent}</div>
     </div>
   );
 }
