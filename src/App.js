@@ -1,6 +1,6 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import JavaEditor from './components/JavaEditor/JavaEditor';
 import Console from './components/Console';
 import ButtonIcon from './components/ButtonIcon/ButtonIcon';
@@ -13,37 +13,37 @@ import {
 
 initializeIcons();
 
-const BUTTONS = [
-  {
-    type: 'primary',
-    text: 'Run',
-    fontAwesomeIcon: 'play',
-    handleClick: (reactEvent) => console.log('Run button clicked', reactEvent),
-  },
-  {
-    type: 'secondary',
-    text: 'Settings',
-    fontAwesomeIcon: 'cog',
-    additionalClass: 'mr-2',
-    handleClick: (reactEvent) =>
-      console.log('Settings button clicked', reactEvent),
-  },
-  {
-    type: 'secondary',
-    text: 'Shortcuts',
-    fontAwesomeIcon: 'code',
-    additionalClass: 'mr-2',
-    handleClick: (reactEvent) =>
-      console.log('Shortcuts button clicked', reactEvent),
-  },
-  {
-    type: 'secondary',
-    text: 'Copy',
-    fontAwesomeIcon: 'copy',
-    additionalClass: 'mr-2',
-    handleClick: (reactEvent) => console.log('Copy button clicked', reactEvent),
-  },
-];
+const createRunButton = (handleClick) => ({
+  type: 'primary',
+  text: 'Run',
+  fontAwesomeIcon: 'play',
+  additionalClass: null,
+  handleClick: handleClick,
+});
+
+const createSettingsButton = (handleClick) => ({
+  type: 'secondary',
+  text: 'Settings',
+  fontAwesomeIcon: 'cog',
+  additionalClass: 'mr-2',
+  handleClick: handleClick,
+});
+
+const createShortcutsButton = (handleClick) => ({
+  type: 'secondary',
+  text: 'Shortcuts',
+  fontAwesomeIcon: 'code',
+  additionalClass: 'mr-2',
+  handleClick: handleClick,
+});
+
+const createCopyButton = (handleClick) => ({
+  type: 'secondary',
+  text: 'Copy',
+  fontAwesomeIcon: 'copy',
+  additionalClass: 'mr-2',
+  handleClick: handleClick,
+});
 
 const createButtonIcon = (buttonModel, index) => (
   <ButtonIcon
@@ -56,23 +56,65 @@ const createButtonIcon = (buttonModel, index) => (
   ></ButtonIcon>
 );
 
-let editor = null;
+const runCode = async (code) => {
+  const url = 'http://localhost:8082/api/v1/run-java';
+
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ code }),
+  });
+
+  const body = await response.text();
+
+  return {status: response.status, body};
+};
+
+const SAMPLE_CODE = `
+  public class Main {
+    public static void main(String[] args) {
+      System.out.println("Hello world");
+    }
+  }
+`;
 
 function App() {
+  const editorRef = useRef();
   const [isConsoleMinimized, setConsoleMinimized] = useState(false);
-  const buttonComponents = BUTTONS.map(createButtonIcon);
 
-  const handleEditorDidMount = (_, current) => (editor = current);
-  
+  const runHandleClick = async () => {
+    const result = await runCode(editorRef.current.getValue());
+    console.log(result);
+  };
+  const runButton = createRunButton(runHandleClick);
+
+  const settingsHandleClick = (event) => console.log(event);
+  const settingsButton = createSettingsButton(settingsHandleClick);
+
+  const shortcutsHandleClick = (event) => console.log(event);
+  const shortcutsButton = createShortcutsButton(shortcutsHandleClick);
+
+  const copyHandleClick = (event) => console.log(event);
+  const copyButton = createCopyButton(copyHandleClick);
+
+  const buttonComponents = [ runButton, settingsButton, shortcutsButton, copyButton].map(createButtonIcon);
+
+  const handleEditorDidMount = (_, editor) => (editorRef.current = editor);
+
   const handleConsoleToggle = () => {
-    setTimeout(() => editor.layout(), 400);
+    setTimeout(() => editorRef.current.layout(), 400);
     setConsoleMinimized(!isConsoleMinimized);
   };
 
   return (
     <div className='h-100'>
       <JavaEditorContainer minimizedConsole={isConsoleMinimized}>
-        <JavaEditor editorDidMount={handleEditorDidMount}></JavaEditor>
+        <JavaEditor
+          sampleCode={SAMPLE_CODE}
+          editorDidMount={handleEditorDidMount}
+        ></JavaEditor>
       </JavaEditorContainer>
 
       <ConsoleContainer minimizedConsole={isConsoleMinimized}>

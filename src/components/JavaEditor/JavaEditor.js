@@ -1,20 +1,15 @@
 import React from 'react';
 import Editor from '@monaco-editor/react';
 
-const code = `
-  public class Main {
-    public static void main(String[] args) {
-      System.out.println("Hello world");
-    }
-  }
-`;
+const LANGUAGE = 'java';
+const THEME = 'dark';
 
 function JavaEditor(props) {
   return (
     <Editor
-      language='java'
-      theme='dark'
-      value={code}
+      language={LANGUAGE}
+      theme={THEME}
+      value={props.sampleCode}
       editorDidMount={props.editorDidMount}
     />
   );
