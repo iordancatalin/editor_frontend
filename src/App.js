@@ -66,7 +66,7 @@ const runCode = async (code) => {
     body: JSON.stringify({ code }),
   });
 
-  const body = await response.text();
+  const body = await response.json();
 
   return { status: response.status, body };
 };
@@ -89,11 +89,10 @@ function App() {
     setConsoleMinimized(false);
     setConsoleLoading(true);
 
-    const result = await runCode(editorRef.current.getValue());
-    const log = { message: result.body };
-    log.level = result.status === 400 ? 'ERROR' : 'INFO';
+    const executionResponse = await runCode(editorRef.current.getValue());
+    const logs = executionResponse.body;
 
-    setLogs([log]);
+    setLogs(logs);
     setConsoleLoading(false);
   };
   const runButton = createRunButton(runHandleClick);

@@ -4,6 +4,7 @@ export const LogComponent = styled.pre.attrs((props) => ({
   className: props.className,
 }))`
   font-size: 100%;
+  margin-bottom: 3px;
 `;
 
 export const ConsoleHeader = styled.div.attrs(() => ({
