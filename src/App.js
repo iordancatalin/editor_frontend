@@ -82,17 +82,16 @@ const SAMPLE_CODE = `
 function App() {
   const editorRef = useRef();
   const [isConsoleMinimized, setConsoleMinimized] = useState(true);
-  const [logs, setLogs] = useState([]);
   const [isConsoleLoading, setConsoleLoading] = useState(false);
+  const [executionResponse, setExecutionResponse] = useState({status: 0, body: null});
 
   const runHandleClick = async () => {
     setConsoleMinimized(false);
     setConsoleLoading(true);
 
-    const executionResponse = await runCode(editorRef.current.getValue());
-    const logs = executionResponse.body;
-
-    setLogs(logs);
+    const resp = await runCode(editorRef.current.getValue());
+    
+    setExecutionResponse(resp);
     setConsoleLoading(false);
   };
   const runButton = createRunButton(runHandleClick);
@@ -132,7 +131,7 @@ function App() {
       <ConsoleContainer minimizedConsole={isConsoleMinimized}>
         <Console
           isLoading={isConsoleLoading}
-          logs={logs}
+          executionResponse={executionResponse}
           minimizedConsole={isConsoleMinimized}
           handleToggle={handleConsoleToggle}
         ></Console>
