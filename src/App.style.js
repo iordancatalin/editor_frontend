@@ -19,8 +19,7 @@ export const ConsoleContainer = styled(Container).attrs(() => ({
       : MAXIMIZED_CONSOLE_HEIGHT;
 
     return css`
-      min-height: ${consoleHeight}px;
-      max-height: ${consoleHeight}px;
+      height: ${consoleHeight}px;
     `;
   }}
 

@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
-export const LogComponent = styled.pre.attrs((props) => ({
-  className: props.className,
+export const ErrorLogComponent = styled.pre.attrs((props) => ({
+  className: 'text-danger',
 }))`
   font-size: 100%;
   margin-bottom: 3px;
@@ -14,4 +14,5 @@ export const ConsoleHeader = styled.div.attrs(() => ({
   left: 0;
   top: 0;
   font-size: 14px;
+  height: 35px;
 `;

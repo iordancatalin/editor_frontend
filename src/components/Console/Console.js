@@ -1,17 +1,15 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
 import Loader from '../Loader';
-import { ConsoleHeader, LogComponent } from './Console.style';
+import { ConsoleHeader, ErrorLogComponent } from './Console.style';
 
-const createLogElement = (log, index) => {
-  const className = log.level === 'ERROR' ? 'text-danger' : 'text-white';
+const infoStyle = { color: '#B2B2B2' };
 
-  return (
-    <div key={index}>
-      <LogComponent className={className}>{log.message}</LogComponent>
-    </div>
-  );
-};
+const createErrorLog = (error, index) => (
+  <div key={index}>
+    <ErrorLogComponent>{error}</ErrorLogComponent>
+  </div>
+);
 
 const createLoaderElement = () => (
   <div className='mt-5 pt-4'>
@@ -19,25 +17,30 @@ const createLoaderElement = () => (
   </div>
 );
 
+const createTerminal = ({ terminalEndpoint }) => (
+  <iframe
+    className='w-100 border-0'
+    style={{ height: 'calc(100% - .5rem)' }}
+    src={terminalEndpoint}
+    title='JavaRunnerTerminal'
+  ></iframe>
+);
+
+const createConsoleElement = ({ status, body }) => {
+  if (status === 400)
+    return <div className='mt-2'>{body.map(createErrorLog)}</div>;
+  if (status === 200) return createTerminal(body);
+
+  return null;
+};
+
 function Console(props) {
-  const createLogElements = () => {
-    const logElements = props.logs.map(createLogElement);
-
-    return (
-      <div>
-        <span style={infoStyle}>
-          2020-07-30 19:22:55 [INFO] Running Java version: openjdk-11.0.6_10
-        </span>
-        <div className='mt-2'>{logElements}</div>
-      </div>
-    );
-  };
-
+  const executionResponse = props.executionResponse;
   const iconName = props.minimizedConsole ? 'chevron-up' : 'chevron-down';
-  const infoStyle = { color: '#B2B2B2' };
+
   const consoleContent = props.isLoading
     ? createLoaderElement()
-    : createLogElements();
+    : createConsoleElement(executionResponse);
 
   return (
     <div className='h-100 position-relative'>
@@ -50,7 +53,16 @@ function Console(props) {
         </div>
       </ConsoleHeader>
 
-      <div className='py-2 px-4 code-font'>{consoleContent}</div>
+      <div
+        className='pt-2 pb-0 pl-4 pr-0 code-font'
+        style={{ height: 'calc(100% - 35px)' }}
+      >
+        <span className='d-none' style={infoStyle}>
+          2020-07-30 19:22:55 [INFO] Running Java version: openjdk-11.0.6_10
+        </span>
+
+        <div className='h-100'>{consoleContent}</div>
+      </div>
     </div>
   );
 }
