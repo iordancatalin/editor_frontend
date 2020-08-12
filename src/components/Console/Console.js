@@ -1,15 +1,9 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
 import Loader from '../Loader';
-import { ConsoleHeader, ErrorLogComponent } from './Console.style';
+import { ConsoleHeader, Terminal } from './Console.style';
 
 const infoStyle = { color: '#B2B2B2' };
-
-const createErrorLog = (error, index) => (
-  <div key={index}>
-    <ErrorLogComponent>{error}</ErrorLogComponent>
-  </div>
-);
 
 const createLoaderElement = () => (
   <div className='mt-5 pt-4'>
@@ -17,30 +11,16 @@ const createLoaderElement = () => (
   </div>
 );
 
-const createTerminal = ({ terminalEndpoint }) => (
-  <iframe
-    className='w-100 border-0'
-    style={{ height: 'calc(100% - .5rem)' }}
-    src={terminalEndpoint}
-    title='JavaRunnerTerminal'
-  ></iframe>
+const createTerminalElement = (terminalEndpoint) => (
+  <Terminal src={terminalEndpoint} title='JavaRunnerTerminal'></Terminal>
 );
 
-const createConsoleElement = ({ status, body }) => {
-  if (status === 400)
-    return <div className='mt-2'>{body.map(createErrorLog)}</div>;
-  if (status === 200) return createTerminal(body);
-
-  return null;
-};
-
 function Console(props) {
-  const executionResponse = props.executionResponse;
   const iconName = props.minimizedConsole ? 'chevron-up' : 'chevron-down';
 
   const consoleContent = props.isLoading
     ? createLoaderElement()
-    : createConsoleElement(executionResponse);
+    : createTerminalElement(props.terminalEndpoint);
 
   return (
     <div className='h-100 position-relative'>
