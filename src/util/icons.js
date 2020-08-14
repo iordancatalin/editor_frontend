@@ -5,9 +5,18 @@ import {
   faCode,
   faChevronUp,
   faChevronDown,
-  faCopy
+  faCopy,
+  faTimes,
 } from '@fortawesome/free-solid-svg-icons';
 
 export function initializeIcons() {
-  library.add(faCog, faPlay, faCode, faChevronUp, faChevronDown, faCopy);
+  library.add(
+    faCog,
+    faPlay,
+    faCode,
+    faChevronUp,
+    faChevronDown,
+    faCopy,
+    faTimes
+  );
 }

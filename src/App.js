@@ -1,5 +1,5 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import {
   ButtonsPanel,
   ConsoleContainer,
@@ -9,6 +9,9 @@ import ButtonIcon from './components/ButtonIcon/ButtonIcon';
 import Console from './components/Console/Console';
 import JavaEditor from './components/JavaEditor/JavaEditor';
 import { initializeIcons } from './util/icons';
+import { SAMPLE_CODE } from './util/constants';
+import { runCode, fetchAvailableJavaVersions } from './service/Service';
+import SettingsDialog from './components/SettingsDialog/SettingsDialog';
 
 initializeIcons();
 
@@ -55,41 +58,36 @@ const createButtonIcon = (buttonModel, index) => (
   ></ButtonIcon>
 );
 
-const runCode = async (code) => {
-  const url = 'http://localhost:8082/api/v1/run-java';
-
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ code }),
-  });
-
-  const body = await response.json();
-
-  return { status: response.status, body };
-};
-
-const SAMPLE_CODE = `
-  public class Main {
-    public static void main(String[] args) {
-      System.out.println("Hello world");
-    }
-  }
-`;
-
 function App() {
   const editorRef = useRef();
   const [isConsoleMinimized, setConsoleMinimized] = useState(true);
   const [isConsoleLoading, setConsoleLoading] = useState(false);
   const [terminalEndpoint, setTerminalEndpoint] = useState(null);
+  const [availableJdkVersions, setAvailableJdkVersions] = useState([]);
+  const [activeJdkVersion, setActiveJdkVersion] = useState(null);
+  const [openDialog, setOpenDialog] = useState(null);
+
+  useEffect(() => {
+    const fetchJavaVersions = async () => {
+      const response = await fetchAvailableJavaVersions();
+      const availableJavaVersions = await response.json();
+
+      setAvailableJdkVersions(availableJavaVersions);
+      setActiveJdkVersion(availableJavaVersions[0]);
+    };
+
+    fetchJavaVersions();
+  }, []);
 
   const runHandleClick = async () => {
     setConsoleMinimized(false);
     setConsoleLoading(true);
 
-    const executionResponse = await runCode(editorRef.current.getValue());
+    const requestBody = {
+      javaVersion: activeJdkVersion,
+      code: editorRef.current.getValue(),
+    };
+    const executionResponse = await runCode(requestBody);
 
     setTerminalEndpoint(executionResponse.body.terminalEndpoint);
     setConsoleLoading(false);
@@ -97,7 +95,7 @@ function App() {
 
   const runButton = createRunButton(runHandleClick);
 
-  const settingsHandleClick = (event) => console.log(event);
+  const settingsHandleClick = () => setOpenDialog('SETTINGS');
   const settingsButton = createSettingsButton(settingsHandleClick);
 
   const shortcutsHandleClick = (event) => console.log(event);
@@ -120,6 +118,31 @@ function App() {
     setConsoleMinimized(!isConsoleMinimized);
   };
 
+  const handleCloseDialog = () => setOpenDialog(null);
+
+  const createSettingsDialog = () => {
+    const handleJdkVersionChange = (index) =>
+      setActiveJdkVersion(availableJdkVersions[index]);
+
+    return (
+      <SettingsDialog
+        handleClose={handleCloseDialog}
+        activeJdkVersion={activeJdkVersion}
+        availableJdkVersions={availableJdkVersions}
+        handleVersionChange={handleJdkVersionChange}
+      ></SettingsDialog>
+    );
+  };
+
+  const getOpenDialog = () => {
+    switch (openDialog) {
+      case 'SETTINGS': return createSettingsDialog();
+      default: return null;
+    }
+  };
+
+  const dialog = getOpenDialog();
+
   return (
     <div className='h-100'>
       <JavaEditorContainer minimizedConsole={isConsoleMinimized}>
@@ -139,6 +162,8 @@ function App() {
       </ConsoleContainer>
 
       <ButtonsPanel>{buttonComponents}</ButtonsPanel>
+
+      {dialog}
     </div>
   );
 }
