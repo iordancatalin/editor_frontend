@@ -136,8 +136,10 @@ function App() {
 
   const getOpenDialog = () => {
     switch (openDialog) {
-      case 'SETTINGS': return createSettingsDialog();
-      default: return null;
+      case 'SETTINGS':
+        return createSettingsDialog();
+      default:
+        return null;
     }
   };
 
@@ -154,6 +156,7 @@ function App() {
 
       <ConsoleContainer minimizedConsole={isConsoleMinimized}>
         <Console
+          activeJdkVersion={activeJdkVersion}
           isLoading={isConsoleLoading}
           terminalEndpoint={terminalEndpoint}
           minimizedConsole={isConsoleMinimized}
