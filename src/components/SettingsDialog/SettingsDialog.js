@@ -5,9 +5,11 @@ import styled from 'styled-components';
 const title = 'Settings';
 
 const JdkOption = styled.button.attrs(() => ({
-  className: 'py-2 px-2 rounded border border-white text-white',
+  className: 'px-2 rounded border border-secondary text-white',
 }))`
-  background: ${(props) => (props.active ? '#1771C3' : 'transparent')};
+  padding-top: 0.4rem;
+  padding-bottom: 0.4rem;
+  background: ${(props) => (props.active ? '#42ab77' : '#5b6066')};
   outline: none;
 
   &:focus {
@@ -31,7 +33,8 @@ const createJdkOption = (jdkOption, index, handleVersionChange) => {
 function SettingsDialog(props) {
   const activeJavaVersion = props.activeJdkVersion;
 
-  const jdkOptions = props.availableJdkVersions.map((jdk) => ({
+  const jdkOptions = props.availableJdkVersions
+    .map((jdk) => ({
       name: jdk,
       active: jdk === activeJavaVersion,
     }))
@@ -41,7 +44,15 @@ function SettingsDialog(props) {
 
   const content = <div className='p-4'>{jdkOptions}</div>;
 
-  return <Dialog handleClose={props.handleClose} title={title} content={content}></Dialog>;
+  return (
+    <Dialog
+      minHeight={350}
+      minWidth={500}
+      handleClose={props.handleClose}
+      title={title}
+      content={content}
+    ></Dialog>
+  );
 }
 
 export default SettingsDialog;
