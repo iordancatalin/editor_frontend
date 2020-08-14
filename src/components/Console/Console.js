@@ -17,6 +17,11 @@ const createTerminalElement = (terminalEndpoint) => (
 
 function Console(props) {
   const iconName = props.minimizedConsole ? 'chevron-up' : 'chevron-down';
+  const activeJdkTag = props.activeJdkVersion && (
+    <span className='ml-4 text-secondary'>
+      <b>#{props.activeJdkVersion}</b>
+    </span>
+  );
 
   const consoleContent = props.isLoading
     ? createLoaderElement()
@@ -27,6 +32,7 @@ function Console(props) {
       <ConsoleHeader onClick={props.handleToggle}>
         <div className='col-11 text-white d-flex align-items-center'>
           Console
+          {activeJdkTag}
         </div>
         <div className='col-1 text-white d-flex align-items-center justify-content-end'>
           <FontAwesomeIcon className='mr-2' icon={iconName}></FontAwesomeIcon>
