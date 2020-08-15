@@ -89,8 +89,10 @@ function App() {
     };
     const executionResponse = await runCode(requestBody);
 
-    setTerminalEndpoint(executionResponse.body.terminalEndpoint);
-    setConsoleLoading(false);
+    setTimeout(() => {
+      setTerminalEndpoint(executionResponse.body.terminalEndpoint);
+      setConsoleLoading(false);
+    }, 500);
   };
 
   const runButton = createRunButton(runHandleClick);
