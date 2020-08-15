@@ -7,6 +7,7 @@ const title = 'Settings';
 const JdkOption = styled.button.attrs(() => ({
   className: 'px-2 rounded border border-secondary text-white',
 }))`
+  min-width: 130px;
   padding-top: 0.4rem;
   padding-bottom: 0.4rem;
   background: ${(props) => (props.active ? '#42ab77' : '#5b6066')};
@@ -19,7 +20,7 @@ const JdkOption = styled.button.attrs(() => ({
 
 const createJdkOption = (jdkOption, index, handleVersionChange) => {
   return (
-    <div key={index} className='mr-3 d-inline-block'>
+    <div key={index} className='mr-3 my-1 d-inline-block'>
       <JdkOption
         active={jdkOption.active}
         onClick={() => handleVersionChange(index)}
@@ -48,6 +49,8 @@ function SettingsDialog(props) {
     <Dialog
       minHeight={350}
       minWidth={500}
+      maxHeight={350}
+      maxWidth={500}
       handleClose={props.handleClose}
       title={title}
       content={content}
