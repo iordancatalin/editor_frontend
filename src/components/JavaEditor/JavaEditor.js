@@ -1,5 +1,5 @@
-import React from 'react';
 import Editor from '@monaco-editor/react';
+import React from 'react';
 
 const LANGUAGE = 'java';
 const THEME = 'dark';
