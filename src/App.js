@@ -10,7 +10,11 @@ import Console from './components/Console/Console';
 import JavaEditor from './components/JavaEditor/JavaEditor';
 import { initializeIcons } from './util/icons';
 import { SAMPLE_CODE } from './util/constants';
-import { runCode, fetchAvailableJavaVersions } from './service/Service';
+import {
+  runCode,
+  fetchAvailableJavaVersions,
+  API_HOST,
+} from './service/Service';
 import SettingsDialog from './components/SettingsDialog/SettingsDialog';
 
 initializeIcons();
@@ -74,7 +78,9 @@ function App() {
     const executionResponse = await runCode(requestBody);
 
     setTimeout(() => {
-      setTerminalEndpoint(executionResponse.body.terminalEndpoint);
+      const terminalEndpoint = `${API_HOST}:${executionResponse.body.terminalPort}`;
+
+      setTerminalEndpoint(terminalEndpoint);
       setConsoleLoading(false);
     }, 500);
   };
@@ -111,10 +117,8 @@ function App() {
 
   const getOpenDialog = () => {
     switch (openDialog) {
-      case 'SETTINGS':
-        return createSettingsDialog();
-      default:
-        return null;
+      case 'SETTINGS': return createSettingsDialog();
+      default: return null;
     }
   };
 

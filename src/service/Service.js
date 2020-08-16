@@ -1,5 +1,8 @@
+export const API_HOST = 'http://localhost';
+export const API_URL = `${API_HOST}:8082`;
+
 export const runCode = async (requestBody) => {
-  const url = 'http://localhost:8082/api/v1/run-java';
+  const url = `${API_URL}/api/v1/run-java`;
 
   const response = await fetch(url, {
     method: 'POST',
@@ -15,7 +18,7 @@ export const runCode = async (requestBody) => {
 };
 
 export const fetchAvailableJavaVersions = async () =>
-  fetch('http://localhost:8082/api/v1/java-versions', {
+  fetch(`${API_URL}/api/v1/java-versions`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
