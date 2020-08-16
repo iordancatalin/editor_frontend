@@ -31,22 +31,6 @@ const createSettingsButton = (handleClick) => ({
   handleClick: handleClick,
 });
 
-const createShortcutsButton = (handleClick) => ({
-  type: 'secondary',
-  text: 'Shortcuts',
-  fontAwesomeIcon: 'code',
-  additionalClass: 'mr-2',
-  handleClick: handleClick,
-});
-
-const createCopyButton = (handleClick) => ({
-  type: 'secondary',
-  text: 'Copy',
-  fontAwesomeIcon: 'copy',
-  additionalClass: 'mr-2',
-  handleClick: handleClick,
-});
-
 const createButtonIcon = (buttonModel, index) => (
   <ButtonIcon
     key={index}
@@ -100,18 +84,7 @@ function App() {
   const settingsHandleClick = () => setOpenDialog('SETTINGS');
   const settingsButton = createSettingsButton(settingsHandleClick);
 
-  const shortcutsHandleClick = (event) => console.log(event);
-  const shortcutsButton = createShortcutsButton(shortcutsHandleClick);
-
-  const copyHandleClick = (event) => console.log(event);
-  const copyButton = createCopyButton(copyHandleClick);
-
-  const buttonComponents = [
-    runButton,
-    settingsButton,
-    shortcutsButton,
-    copyButton,
-  ].map(createButtonIcon);
+  const buttonComponents = [runButton, settingsButton].map(createButtonIcon);
 
   const handleEditorDidMount = (_, editor) => (editorRef.current = editor);
 

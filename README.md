@@ -1,4 +1,5 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This project is the front-end for a Java Online Compiler. 
+To use the app you will need the [BackEnd](https://github.com/iordancatalin/java-service-api)
 
 ## Available Scripts
 
